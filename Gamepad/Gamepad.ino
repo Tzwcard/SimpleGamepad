@@ -15,17 +15,16 @@
 #include <Joystick.h>
 
 void setup() {
-    DDRF &= (~0xf3); DDRB &= (~0xf0);
-    PORTF |= 0xf3; PORTB |= 0xf0;
+  DDRF &= (~0xf3); DDRB &= (~0xf0);
+  PORTF |= 0xf3; PORTB |= 0xf0;
 
-    DDRD &= ~0x03; // pin 2 and 3, INT0 and INT1
-    PORTD |= 0x03;
+  DDRD &= ~0x03; // pin 2 and 3, INT0 and INT1
+  PORTD |= 0x03;
     
-    EICRA = _BV(ISC00) | _BV(ISC10);
-    EIMSK = _BV(INT0) | _BV(INT1);
-    EIFR  = _BV(INTF0) | _BV(INTF1);
+  EICRA = _BV(ISC00) | _BV(ISC10);
+  EIMSK = _BV(INT0) | _BV(INT1);
+  EIFR  = _BV(INTF0) | _BV(INTF1);
 
-  // Initialize Joystick Library
   Joystick.begin(false);
 }
 
@@ -55,13 +54,9 @@ ISR(INT0_vect) { update_encoder(); }
 ISR(INT1_vect) { update_encoder(); }
 
 void loop() {
-
-  // Read pin values
   Joystick.xAxis = *(int8_t*)&tt_val;
   keys = (((PINB & 0xf0) << 4) | (PINF & 0xf3));
   Joystick.buttons = (~keys & 0xff3) >> 2;
   Joystick.sendState();
-
-//  delay(50);
 }
 
