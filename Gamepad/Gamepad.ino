@@ -27,14 +27,12 @@ void setup() {
 
   // Initialize Joystick Library
   Joystick.begin(false);
-  Joystick.buttons = 0;
 }
 
 uint8_t tt_state = 0;
 uint8_t tt_val = 0;
 uint32_t keys = 0;
 
-// interrupts
 void update_encoder(void) {
   uint8_t tmpstate = 0;
 
@@ -61,7 +59,7 @@ void loop() {
   // Read pin values
   Joystick.xAxis = *(int8_t*)&tt_val;
   keys = (((PINB & 0xf0) << 4) | (PINF & 0xf3));
-  Joystick.buttons = (~keys & 0xff3);
+  Joystick.buttons = (~keys & 0xff3) >> 2;
   Joystick.sendState();
 
 //  delay(50);
