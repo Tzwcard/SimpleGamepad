@@ -14,6 +14,10 @@
 
 #include <Joystick.h>
 
+// set the step value of your encoder
+#define TURNTABLE_CIRCLE_ACTUAL 320
+#define TURNTABLE_VALUE_MAX TURNTABLE_CIRCLE_ACTUAL * 10
+
 void setup() {
   DDRF &= (~0xf3); DDRB &= (~0xf0);
   PORTF |= 0xf3; PORTB |= 0xf0;
@@ -29,7 +33,7 @@ void setup() {
 }
 
 uint8_t tt_state = 0;
-uint8_t tt_val = 0;
+uint16_t tt_val = 0;
 uint32_t keys = 0;
 
 void update_encoder(void) {
@@ -47,6 +51,8 @@ void update_encoder(void) {
     default: tt_val -= 2; break;
   }
   
+  tt_val %= TURNTABLE_VALUE_MAX;
+  
   return;
 }
 
@@ -54,7 +60,7 @@ ISR(INT0_vect) { update_encoder(); }
 ISR(INT1_vect) { update_encoder(); }
 
 void loop() {
-  Joystick.xAxis = *(int8_t*)&tt_val;
+  Joystick.xAxis = (uint8_t)(double)(tt_val * 256 / 1.0 / TURNTABLE_CIRCLE_ACTUAL);
   keys = (((PINB & 0xf0) << 4) | (PINF & 0xf3));
   Joystick.buttons = (~keys & 0xff3) >> 2;
   Joystick.sendState();
