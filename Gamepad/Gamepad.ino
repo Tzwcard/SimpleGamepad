@@ -16,7 +16,6 @@
 
 // set the step value of your encoder
 #define TURNTABLE_CIRCLE_ACTUAL 320
-#define TURNTABLE_VALUE_MAX TURNTABLE_CIRCLE_ACTUAL * 10
 
 void setup() {
   DDRF &= (~0xf3); DDRB &= (~0xf0);
@@ -33,7 +32,7 @@ void setup() {
 }
 
 uint8_t tt_state = 0;
-uint16_t tt_val = 0;
+int16_t tt_val = 0;
 uint32_t keys = 0;
 
 void update_encoder(void) {
@@ -51,7 +50,7 @@ void update_encoder(void) {
     default: tt_val -= 2; break;
   }
   
-  tt_val %= TURNTABLE_VALUE_MAX;
+  tt_val = (tt_val + TURNTABLE_CIRCLE_ACTUAL) % TURNTABLE_CIRCLE_ACTUAL;
   
   return;
 }
