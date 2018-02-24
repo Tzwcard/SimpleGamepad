@@ -1,3 +1,7 @@
+/* 
+ * this is a modified Matthew Heironimus's joystick library 1.0
+ */
+
 /*
   Joystick.h
 
@@ -18,8 +22,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef JOYSTICK_h
-#define JOYSTICK_h
+#ifndef JOYSTICK2_h
+#define JOYSTICK2_h
 
 #include "HID.h"
 
@@ -45,45 +49,15 @@
 
 class Joystick_
 {
-private:
-	bool     autoSendState;
-//	int8_t	 xAxis;
-	int8_t	 yAxis;
-	int8_t	 zAxis;
-	int16_t	 xAxisRotation;
-	int16_t	 yAxisRotation;
-	int16_t	 zAxisRotation;
-//	uint32_t buttons;
-	uint8_t  throttle;
-	uint8_t  rudder;
-	int16_t	 hatSwitch[2];
-
 public:
 	Joystick_();
 	
-	// modified
 	int8_t	 xAxis;
+  int8_t  yAxis;
 	uint32_t buttons;
 
-	void begin(bool initAutoSendState = true);
+	void begin();
 	void end();
-
-	void setXAxis(int8_t value);
-	void setYAxis(int8_t value);
-	void setZAxis(int8_t value);
-
-	void setXAxisRotation(int16_t value);
-	void setYAxisRotation(int16_t value);
-	void setZAxisRotation(int16_t value);
-
-	void setButton(uint8_t button, uint8_t value);
-	void pressButton(uint8_t button);
-	void releaseButton(uint8_t button);
-
-	void setThrottle(uint8_t value);
-	void setRudder(uint8_t value);
-
-	void setHatSwitch(int8_t hatSwitch, int16_t value);
 
 	void sendState();
 };
