@@ -27,10 +27,16 @@
 
 // set the step value of your encoder, mine has 320 steps per circle
 #define TURNTABLE_CIRCLE_ACTUAL 320
+#define TURNTABLE_MAX_INNERVALUE 92160 // lcm(320, 72, 256)
+
+uint8_t tt_state = 0;
+int16_t tt_val = 0;
+uint32_t keys = 0;
 
 void setup() {
-    DDRF &= (~0xf3); DDRB &= (~0xf0);
-    PORTF |= 0xf3; PORTB |= 0xf0;
+
+    DDRF &= (~0xf2); DDRB &= (~0xf0);
+    PORTF |= 0xf2; PORTB |= 0xf0;
 
     DDRD &= ~0x03; // pin 2 and 3, INT0 and INT1
     PORTD |= 0x03;
@@ -43,10 +49,6 @@ void setup() {
   Joystick.begin();
   Joystick.buttons = 0;
 }
-
-uint8_t tt_state = 0;
-int16_t tt_val = 0;
-uint32_t keys = 0;
 
 // interrupts
 void update_encoder(void) {
@@ -64,8 +66,8 @@ void update_encoder(void) {
     default: tt_val -= 2; break;
   }
 
-  tt_val = (tt_val + TURNTABLE_CIRCLE_ACTUAL) % TURNTABLE_CIRCLE_ACTUAL;
-  
+  tt_val = (tt_val + TURNTABLE_MAX_INNERVALUE) % TURNTABLE_MAX_INNERVALUE;
+
   return;
 }
 
@@ -73,7 +75,7 @@ ISR(INT0_vect) { update_encoder(); }
 ISR(INT1_vect) { update_encoder(); }
 
 void loop() {
-  Joystick.xAxis = (uint8_t)(tt_val * 256 / TURNTABLE_CIRCLE_ACTUAL);
+  Joystick.xAxis = (uint8_t)(double)(tt_val * 72.0 / 1.0 / TURNTABLE_CIRCLE_ACTUAL);
   /*
    * change the pins here, I plugged all pins reversed so the codes look like this
    * ex: keys = ((PINB & 0xf0) >> 4) | (PINF & 0xf0) | ((PINF & 0x02) << 8);
