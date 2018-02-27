@@ -21,6 +21,8 @@
   * PE6 7
   * PD6 12
   * PC7 13
+  * PD2 0 (INT2)(TX) (usable?)
+  * PD3 1 (INT3)(RX) (usable?)
   */
 
 #include "Joystick2.h"
